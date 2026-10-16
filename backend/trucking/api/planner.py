@@ -33,7 +33,7 @@ from ..domain.recommend import recommend, summarise
 from ..domain.risk import assess
 from ..domain.sampling import corridor_points, sample_route
 from ..services import weather as weather_service
-from ..services.geocoding import geocode
+from ..services.geocoding import PlaceNotFound, geocode
 from ..services.routing import generate_routes
 from .validation import PlanRequest, PlaceInput, check_route_size
 
@@ -76,11 +76,19 @@ class Plan:
     elapsed_ms: int
 
 
-def _resolve(place: PlaceInput) -> Place:
-    """Turn user input into a coordinate, geocoding only when needed."""
+def _resolve(place: PlaceInput, field: str) -> Place:
+    """Turn user input into a coordinate, geocoding only when needed.
+
+    A failed lookup is tagged with the form field that caused it, so the
+    client can mark the offending input rather than just show a sentence.
+    """
     if place.resolved:
         return Place(query=place.text, name=place.text, lon=place.lon, lat=place.lat)
-    return geocode(place.text)
+    try:
+        return geocode(place.text)
+    except PlaceNotFound as exc:
+        exc.field = field
+        raise
 
 
 def _weather_window(
@@ -172,8 +180,8 @@ def build_plan(request: PlanRequest) -> Plan:
     """Run the whole pipeline. Upstream failures propagate as UpstreamError."""
     started = time.monotonic()
 
-    origin = _resolve(request.origin)
-    destination = _resolve(request.destination)
+    origin = _resolve(request.origin, "origin")
+    destination = _resolve(request.destination, "destination")
 
     raw_routes, notes = generate_routes(
         origin.coord, destination.coord, wanted=request.wanted_routes

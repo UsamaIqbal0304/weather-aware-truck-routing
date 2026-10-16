@@ -336,6 +336,17 @@ class PlanEndpointTests(SimpleTestCase):
             response = self._post()
         self.assertEqual(response.status_code, 422)
 
+    def test_an_unknown_place_names_the_field_that_failed(self):
+        """So the form can mark the offending input, not just apologise."""
+        from trucking.services.geocoding import PlaceNotFound
+
+        with mock.patch(
+            "trucking.api.planner.geocode", side_effect=PlaceNotFound("no match for that")
+        ):
+            response = self._post(origin="Nowhere City")
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.json()["error"]["field"], "origin")
+
     def test_an_upstream_failure_is_a_502(self):
         from trucking.services.http import UpstreamError
 

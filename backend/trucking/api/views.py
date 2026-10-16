@@ -99,6 +99,8 @@ def plan_view(request: HttpRequest) -> HttpResponse:
             service=exc.service,
         )
     except ValueError as exc:
-        return _error(422, "unplannable", str(exc))
+        # A geocoding miss knows which of the two inputs it was.
+        field = getattr(exc, "field", None)
+        return _error(422, "unplannable", str(exc), **({"field": field} if field else {}))
 
     return JsonResponse(serializers.plan_response(plan))
