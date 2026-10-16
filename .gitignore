@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Tooling
+.vercel/
+.pytest_cache/
+.ruff_cache/
+.DS_Store
+
+# Local environment
+.env
+.env.local
