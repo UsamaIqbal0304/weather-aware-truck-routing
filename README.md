@@ -116,7 +116,7 @@ The Vite dev server proxies `/api` to `http://127.0.0.1:8000` by default; set
 ### Tests
 
 ```bash
-.venv/bin/python backend/manage.py test
+.venv/bin/python backend/manage.py test trucking
 ```
 
 118 tests, no network access: the upstream clients are patched with a
