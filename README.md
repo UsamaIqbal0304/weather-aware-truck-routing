@@ -7,7 +7,7 @@ checkpoint against the briefed risk and load rules, and recommends the route
 a dispatcher should take — with the reasoning spelled out rather than
 implied.
 
-- **Live app:** _see the deployment URL in the repository description_
+- **Live app:** <https://weather-aware-truck-routing-eta.vercel.app>
 - **Stack:** Django 5.1 (API only, no database) · React 18 + TypeScript + Vite
   · MapLibre GL JS
 - **No API keys.** Routing, geocoding, forecasts and basemap tiles all come
@@ -89,7 +89,7 @@ across the candidates, "travel time decides it".
 | Deliverable | Status |
 | --- | --- |
 | GitHub repository | Met — this repository |
-| Hosted application | Met — see the repository description |
+| Hosted application | Met — <https://weather-aware-truck-routing-eta.vercel.app> |
 | 5–10 min Loom walkthrough | Recorded separately |
 
 ---
@@ -124,6 +124,16 @@ deterministic stub whose forecast is a function of latitude, so the expected
 ranking can be derived by hand and asserted. They cover the risk table's band
 edges, the load rules, Voronoi mile attribution, ETA interpolation, the
 lexicographic comparator's tie-breaks, and every API status path.
+
+### Deployment
+
+The hosted copy runs on Vercel: the Vite build is served as static files and
+each API endpoint is a Python serverless function. `api/health.py`,
+`api/geocode.py` and `api/plan.py` are three-line shims that hand the request
+to the same Django WSGI application the local server runs, via
+`backend/config/serverless.py`. `vercel.json` pins the build commands and
+disables framework auto-detection, which otherwise sees `backend/manage.py`
+and tries to run the platform's Django preset.
 
 ---
 
