@@ -226,3 +226,10 @@ cache TTL is an environment-overridable Django setting
   explains the cap instead of truncating the route.
 - The map needs WebGL. Where a browser cannot provide it, the map area says
   so and the panel — ranking, checkpoints, forecasts — keeps working.
+- The risk shown is the real forecast, so on a calm day every candidate
+  scores Low and the recommendation falls through to travel time — which the
+  banner says outright instead of implying a weather verdict it did not make.
+  The four preset corridors are picked for the conditions each is likeliest
+  to meet (crosswind, mountain snow, Gulf rain, desert heat), and the full
+  risk table, including every band edge and all three load rules, is pinned
+  by the test suite rather than by whatever the sky is doing today.
